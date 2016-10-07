@@ -253,12 +253,13 @@ modelPerformance <- function(model, x = NULL) {
     if (is.null(x)) {
         # prediction on training set
         pred <- predict(model)
-        acc <- confusionMatrix(pred, training$classe)$overall[1]
+        realVal <- training$classe
     } else {
         # prediction on validation set
         pred <- predict(model, newdata = x)
-        acc <- confusionMatrix(pred, validating$classe)$overall[1]
+        realVal <- validating$classe
     }
+    acc <- confusionMatrix(pred, realVal)$overall[1]
     100*acc
 }
 ```
