@@ -211,9 +211,9 @@ urlData &lt;-<span class="st"> &quot;https://d396qusza40orc.cloudfront.net/predm
 urlTrain &lt;-<span class="st"> </span><span class="kw">paste</span>(urlData, <span class="st">&quot;pml-training.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
 urlTest &lt;-<span class="st"> </span><span class="kw">paste</span>(urlData, <span class="st">&quot;pml-testing.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
 <span class="kw">getData</span>(urlTrain, dsTrain)</code></pre></div>
-<pre><code>## [1] &quot;File ./data/pml-training.csv downloaded. Date: Fri Oct 07 21:58:42 2016&quot;</code></pre>
+<pre><code>## [1] &quot;File ./data/pml-training.csv downloaded. Date: Fri Oct 07 22:02:41 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getData</span>(urlTest, dsTest)</code></pre></div>
-<pre><code>## [1] &quot;File ./data/pml-testing.csv downloaded. Date: Fri Oct 07 21:58:42 2016&quot;</code></pre>
+<pre><code>## [1] &quot;File ./data/pml-testing.csv downloaded. Date: Fri Oct 07 22:02:41 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># load into R</span>
 pmlTrain &lt;-<span class="st"> </span><span class="kw">read.csv</span>(dsTrain)
 pmlTest &lt;-<span class="st"> </span><span class="kw">read.csv</span>(dsTest)
@@ -346,7 +346,7 @@ validating &lt;-<span class="st"> </span>pmlTrain2[-inTrain, ]</code></pre></div
 <div id="model" class="section level1">
 <h1><span class="header-section-number">5</span> Model selection</h1>
 <p>As discussed earlier three different tree-based models will be trained and evaluated: <strong>classification trees</strong> (CART), <strong>random forests</strong> (RF) and <strong>gradient boosting</strong> (GBM). At the end of the section a note is included about combining the models.</p>
-<p>For evaluating the performance of a model function will be used:</p>
+<p>For evaluating the performance of a model the following function will be used:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># model performance (accuracy)</span>
 modelPerformance &lt;-<span class="st"> </span>function(model, <span class="dt">x =</span> <span class="ot">NULL</span>) {
     if (<span class="kw">is.null</span>(x)) {

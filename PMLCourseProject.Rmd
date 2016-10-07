@@ -246,7 +246,7 @@ evaluated: **classification trees** (CART), **random forests** (RF) and
 **gradient boosting** (GBM). At the end of the section a note is 
 included about combining the models.
 
-For evaluating the performance of a model function will be used:
+For evaluating the performance of a model the following function will be used:
 ```{r perffunctions}
 # model performance (accuracy)
 modelPerformance <- function(model, x = NULL) {
