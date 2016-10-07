@@ -3,12 +3,12 @@ title: 'Practical Machine Learning: Prediction Assignment'
 author: "Robert Emerencia"
 date: "October 7, 2016"
 output:
+  pdf_document:
+    toc: yes
   html_document:
     highlight: tango
     number_sections: yes
     theme: united
-    toc: yes
-  pdf_document:
     toc: yes
 linkcolor: cyan
 urlcolor: magenta
@@ -378,10 +378,10 @@ accValGBM <- format(accValGBM, digits = 2, nsmall = 2)
 ```
 
 | method  | training accuracy (%) | validation accuracy (%) | estimated out-of-sample error (%)
-|---|---|---|---|
+|---:|---:|---:|---:|
 |  `rpart` | `r accTrainCART`  |  `r accValCART`   | `r oseCART`    |
-|`rf`   | `r accTrainRF`  |  `r accValRF`   |   `r oseRF`     |
-|`gbm`   | `r accTrainGBM`  | `r accValGBM`   |  `r oseGBM`  |
+| `rf`   | `r accTrainRF` |  `r accValRF` |   `r oseRF`     |
+| `gbm`   | `r accTrainGBM` | `r accValGBM` |  `r oseGBM`  |
 
 The random forest model has the best accuracy and estimated out-of-sample error
 and is chosen as final model to predict the 20 different test set cases. The 

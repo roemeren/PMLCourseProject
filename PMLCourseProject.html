@@ -211,9 +211,9 @@ urlData &lt;-<span class="st"> &quot;https://d396qusza40orc.cloudfront.net/predm
 urlTrain &lt;-<span class="st"> </span><span class="kw">paste</span>(urlData, <span class="st">&quot;pml-training.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
 urlTest &lt;-<span class="st"> </span><span class="kw">paste</span>(urlData, <span class="st">&quot;pml-testing.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
 <span class="kw">getData</span>(urlTrain, dsTrain)</code></pre></div>
-<pre><code>## [1] &quot;File ./data/pml-training.csv downloaded. Date: Fri Oct 07 20:36:03 2016&quot;</code></pre>
+<pre><code>## [1] &quot;File ./data/pml-training.csv downloaded. Date: Fri Oct 07 20:46:17 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getData</span>(urlTest, dsTest)</code></pre></div>
-<pre><code>## [1] &quot;File ./data/pml-testing.csv downloaded. Date: Fri Oct 07 20:36:04 2016&quot;</code></pre>
+<pre><code>## [1] &quot;File ./data/pml-testing.csv downloaded. Date: Fri Oct 07 20:46:18 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># load into R</span>
 pmlTrain &lt;-<span class="st"> </span><span class="kw">read.csv</span>(dsTrain)
 pmlTest &lt;-<span class="st"> </span><span class="kw">read.csv</span>(dsTest)
@@ -456,30 +456,30 @@ accValGBM &lt;-<span class="st"> </span><span class="kw">validatingPerformance</
 <table>
 <thead>
 <tr class="header">
-<th align="left">method</th>
-<th align="left">training accuracy (%)</th>
-<th align="left">validation accuracy (%)</th>
-<th align="left">estimated out-of-sample error (%)</th>
+<th align="right">method</th>
+<th align="right">training accuracy (%)</th>
+<th align="right">validation accuracy (%)</th>
+<th align="right">estimated out-of-sample error (%)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left"><code>rpart</code></td>
-<td align="left">87.60</td>
-<td align="left">85.37</td>
-<td align="left">14.63</td>
+<td align="right"><code>rpart</code></td>
+<td align="right">87.60</td>
+<td align="right">85.37</td>
+<td align="right">14.63</td>
 </tr>
 <tr class="even">
-<td align="left"><code>rf</code></td>
-<td align="left">100.00</td>
-<td align="left">99.54</td>
-<td align="left">0.46</td>
+<td align="right"><code>rf</code></td>
+<td align="right">100.00</td>
+<td align="right">99.54</td>
+<td align="right">0.46</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>gbm</code></td>
-<td align="left">99.74</td>
-<td align="left">98.79</td>
-<td align="left">1.21</td>
+<td align="right"><code>gbm</code></td>
+<td align="right">99.74</td>
+<td align="right">98.79</td>
+<td align="right">1.21</td>
 </tr>
 </tbody>
 </table>
