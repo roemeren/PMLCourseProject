@@ -106,7 +106,7 @@ featMissing <- sapply(pmlData, function(x) sum(is.na(x)))
 table(featMissing[featMissing != 0])
 ```
 For `r sum(featMissing != 0)`/`r length(featMissing) -1 ` (excluding 
-`train`) features there are missing values, varying between `r min(featMissing != 0)` and `r min(featMissing != 0)` observations or 98 to 100 percent.
+`train`) features there are missing values, varying between 19236 and 19642 observations or 98 to 100 percent.
 
 Imputing all these missing values wouldn't lead to good results
 which is why all features with missing values are removed from the dataset.

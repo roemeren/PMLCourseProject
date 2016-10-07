@@ -210,9 +210,9 @@ urlData &lt;-<span class="st"> &quot;https://d396qusza40orc.cloudfront.net/predm
 urlTrain &lt;-<span class="st"> </span><span class="kw">paste</span>(urlData, <span class="st">&quot;pml-training.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
 urlTest &lt;-<span class="st"> </span><span class="kw">paste</span>(urlData, <span class="st">&quot;pml-testing.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
 <span class="kw">getData</span>(urlTrain, dsTrain)</code></pre></div>
-<pre><code>## [1] &quot;File ./data/pml-training.csv downloaded. Date: Fri Oct 07 17:18:31 2016&quot;</code></pre>
+<pre><code>## [1] &quot;File ./data/pml-training.csv downloaded. Date: Fri Oct 07 17:37:22 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getData</span>(urlTest, dsTest)</code></pre></div>
-<pre><code>## [1] &quot;File ./data/pml-testing.csv downloaded. Date: Fri Oct 07 17:18:32 2016&quot;</code></pre>
+<pre><code>## [1] &quot;File ./data/pml-testing.csv downloaded. Date: Fri Oct 07 17:37:23 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># load into R</span>
 pmlTrain &lt;-<span class="st"> </span><span class="kw">read.csv</span>(dsTrain)
 pmlTest &lt;-<span class="st"> </span><span class="kw">read.csv</span>(dsTest)
@@ -240,7 +240,7 @@ featMissing &lt;-<span class="st"> </span><span class="kw">sapply</span>(pmlData
 ##    67     1     1     1     4     1     4     2     2     1     1     2 
 ## 19319 19320 19321 19642 
 ##     1     4     2     6</code></pre>
-<p>For 100/159 (excluding <code>train</code>) features there are missing values, varying between 0 and 0 observations or 98 to 100 percent.</p>
+<p>For 100/159 (excluding <code>train</code>) features there are missing values, varying between 19236 and 19642 observations or 98 to 100 percent.</p>
 <p>Imputing all these missing values wouldn’t lead to good results which is why all features with missing values are removed from the dataset.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># only keep features without missing values</span>
 pmlData &lt;-<span class="st"> </span>pmlData[, featMissing ==<span class="st"> </span><span class="dv">0</span>]</code></pre></div>
