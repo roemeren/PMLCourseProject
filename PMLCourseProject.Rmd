@@ -125,10 +125,10 @@ are removed from the dataset.
 pmlData$raw_timestamp_part_1 <- NULL
 pmlData$raw_timestamp_part_2 <- NULL
 pmlData$cvtd_timestamp <- NULL
-pmlData$X <- NULL
-pmlData$user_name <- NULL
 pmlData$new_window <- NULL
 pmlData$num_window <- NULL
+pmlData$X <- NULL
+pmlData$user_name <- NULL
 ```
 ## Cleaned datasets
 The merged dataset is split again in a cleaned training and test set.
