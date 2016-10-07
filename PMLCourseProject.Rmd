@@ -109,7 +109,7 @@ For `r sum(featMissing != 0)`/`r length(featMissing) -1 ` (excluding
 `train`) features there are missing values, varying between `r min(featMissing != 0)` and `r min(featMissing != 0)` observations or 98 to 100 percent.
 
 Imputing all these missing values wouldn't lead to good results
-which is why all variables with missing values are removed from the dataset.
+which is why all features with missing values are removed from the dataset.
 ```{r removemissing}
 # only keep features without missing values
 pmlData <- pmlData[, featMissing == 0]
@@ -148,7 +148,7 @@ descriptive statistics (5-number summaries) and exploratory plots (boxplots and 
 Relationships between the (quantitative) features and the (categorical) outcome `classe` were investigated by scatter plots (feature vs. feature) and 
 side-by-side boxplots (feature vs. `classe`). 
 
-This section describes the 3 main findings of the EDA.
+This section describes the three main findings of the EDA.
 
 ## Normality of the features
 Many of the **features don't follow a normal distribution** or can easily be normalized. The distributions in general are complex and multi-modal which 
@@ -171,7 +171,7 @@ boxplot(pmlTrain2$gyros_forearm_y, main = "gyros_forearm_y")
 mtext("Outlier examples", outer = TRUE, cex = 1.5)
 ```
 
-The outlier has extreme values for 8 different variables.
+The outlier has extreme values for 8 different features.
 ```{r outlierdetail}
 # show outlier values compared to mean & median values
 colSelect <- c("total_accel_dumbbell", "gyros_dumbbell_x",
