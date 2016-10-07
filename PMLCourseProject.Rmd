@@ -224,8 +224,8 @@ validating <- pmlTrain2[-inTrain, ]
 
 # Model selection {#model}
 As discussed earlier three different tree-based models will be trained and 
-evaluated: classification trees (CART), random forests (RF) and 
-gradient boosting (GBM). At the end of the section a note is included about combining the models.
+evaluated: **classification trees** (CART), **random forests** (RF) and 
+**gradient boosting** (GBM). At the end of the section a note is included about combining the models.
 
 For evaluating the performance of a model two functions will be used:
 ```{r perffunctions}
