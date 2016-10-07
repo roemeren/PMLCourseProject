@@ -211,9 +211,9 @@ urlData &lt;-<span class="st"> &quot;https://d396qusza40orc.cloudfront.net/predm
 urlTrain &lt;-<span class="st"> </span><span class="kw">paste</span>(urlData, <span class="st">&quot;pml-training.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
 urlTest &lt;-<span class="st"> </span><span class="kw">paste</span>(urlData, <span class="st">&quot;pml-testing.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
 <span class="kw">getData</span>(urlTrain, dsTrain)</code></pre></div>
-<pre><code>## [1] &quot;File ./data/pml-training.csv downloaded. Date: Fri Oct 07 20:50:50 2016&quot;</code></pre>
+<pre><code>## [1] &quot;File ./data/pml-training.csv downloaded. Date: Fri Oct 07 21:46:29 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getData</span>(urlTest, dsTest)</code></pre></div>
-<pre><code>## [1] &quot;File ./data/pml-testing.csv downloaded. Date: Fri Oct 07 20:50:50 2016&quot;</code></pre>
+<pre><code>## [1] &quot;File ./data/pml-testing.csv downloaded. Date: Fri Oct 07 21:46:29 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># load into R</span>
 pmlTrain &lt;-<span class="st"> </span><span class="kw">read.csv</span>(dsTrain)
 pmlTest &lt;-<span class="st"> </span><span class="kw">read.csv</span>(dsTest)
@@ -276,7 +276,7 @@ pmlTest2$problem_id &lt;-<span class="st"> </span>pmlTest$problem_id</code></pre
 <p>This section describes the three main findings of the EDA.</p>
 <div id="normality-of-the-features" class="section level2">
 <h2><span class="header-section-number">3.1</span> Normality of the features</h2>
-<p>Many of the <strong>features don’t follow a normal distribution</strong> or can easily be normalized. The distributions in general are complex and multi-modal which could be related to specific circumstances related to the experiments and/or the participants. There however is not enough information to explore this further.</p>
+<p>Many of the <strong>features don’t follow a normal distribution</strong> or can easily be normalized. The distributions in general are complex and multimodal which could be related to specific circumstances related to the experiments and/or the participants. There however is not enough information to explore this further.</p>
 <p>The figure below shows an example for the <code>accel_belt_y</code> feature.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
 <span class="kw">ggplot</span>(pmlTrain2, <span class="kw">aes</span>(<span class="dt">x =</span> accel_belt_y, <span class="dt">color =</span> classe)) +<span class="st"> </span><span class="kw">geom_density</span>()</code></pre></div>

@@ -3,12 +3,12 @@ title: 'Practical Machine Learning: Prediction Assignment'
 author: "Robert Emerencia"
 date: "October 7, 2016"
 output:
+  pdf_document:
+    toc: yes
   html_document:
     highlight: tango
     number_sections: yes
     theme: united
-    toc: yes
-  pdf_document:
     toc: yes
 linkcolor: cyan
 urlcolor: magenta
@@ -160,7 +160,7 @@ This section describes the three main findings of the EDA.
 
 ## Normality of the features
 Many of the **features don't follow a normal distribution** or can easily
-be normalized. The distributions in general are complex and multi-modal 
+be normalized. The distributions in general are complex and multimodal 
 which could be related to specific circumstances related to 
 the experiments and/or the participants. There however is not enough 
 information to explore this further.
