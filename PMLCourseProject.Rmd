@@ -246,18 +246,19 @@ evaluated: **classification trees** (CART), **random forests** (RF) and
 **gradient boosting** (GBM). At the end of the section a note is 
 included about combining the models.
 
-For evaluating the performance of a model two functions will be used:
+For evaluating the performance of a model function will be used:
 ```{r perffunctions}
-# training set performance (accuracy)
-trainingPerformance <- function(model) {
-    pred <- predict(model)
-    acc <- confusionMatrix(pred, training$classe)$overall[1]
-    100*acc
-}
-# test set performance (accuracy)
-validatingPerformance <- function(model, x) {
-    pred <- predict(model, newdata = x)
-    acc <- confusionMatrix(pred, validating$classe)$overall[1]
+# model performance (accuracy)
+modelPerformance <- function(model, x = NULL) {
+    if (is.null(x)) {
+        # prediction on training set
+        pred <- predict(model)
+        acc <- confusionMatrix(pred, training$classe)$overall[1]
+    } else {
+        # prediction on validation set
+        pred <- predict(model, newdata = x)
+        acc <- confusionMatrix(pred, validating$classe)$overall[1]
+    }
     100*acc
 }
 ```
@@ -290,8 +291,8 @@ the resulting tree however is very hard to interpret (as expected).
 ```{r evalcart, warning = FALSE, message = FALSE}
 library(rpart.plot)
 prp(trainCART$finalModel)
-accTrainCART <- trainingPerformance(trainCART)
-accValCART <- validatingPerformance(trainCART, validating)
+accTrainCART <- modelPerformance(trainCART)
+accValCART <- modelPerformance(trainCART, validating)
 c(accTrainCART, accValCART)
 ```
 The final classification tree has a training set accuracy of 87.6% and a 
@@ -329,8 +330,8 @@ The tuned random forest model has a training set accuracy of 100%
 and a validation set accuracy of 99.5%. This is quite a big improvement 
 over the classification tree model. 
 ```{r evalrf, warning = FALSE, message = FALSE}
-accTrainRF <- trainingPerformance(trainRF)
-accValRF <- validatingPerformance(trainRF, validating)
+accTrainRF <- modelPerformance(trainRF)
+accValRF <- modelPerformance(trainRF, validating)
 c(accTrainRF, accValRF)
 ```
 
@@ -366,8 +367,8 @@ plot(trainGBM)
 The final model has a training set accuracy of 99.7% and a validation 
 set accuracy of 98.8%, which is a bit worse than the random forest model.
 ```{r evalgbm, warning = FALSE, message = FALSE}
-accTrainGBM <- trainingPerformance(trainGBM)
-accValGBM <- validatingPerformance(trainGBM, validating)
+accTrainGBM <- modelPerformance(trainGBM)
+accValGBM <- modelPerformance(trainGBM, validating)
 c(accTrainGBM, accValGBM)
 ```
 ## Combined model?
