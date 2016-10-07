@@ -3,12 +3,12 @@ title: 'Practical Machine Learning: Prediction Assignment'
 author: "Robert Emerencia"
 date: "October 7, 2016"
 output:
-  pdf_document:
-    toc: yes
   html_document:
     highlight: tango
     number_sections: yes
     theme: united
+    toc: yes
+  pdf_document:
     toc: yes
 linkcolor: cyan
 urlcolor: magenta
@@ -18,6 +18,7 @@ urlcolor: magenta
 library(knitr)
 opts_chunk$set(echo = TRUE)
 ```
+\pagebreak
 
 # Executive summary {.unnumbered}
 A dataset consisting of various accelerometer measurements is used to 
@@ -157,7 +158,7 @@ could be related to specific circumstances related to the experiments and/or the
 The figure below shows an example for the `accel_belt_y` feature.
 
 ```{r nonnormal}
-suppressWarnings(library(ggplot2))
+library(ggplot2)
 ggplot(pmlTrain2, aes(x = accel_belt_y, color = classe)) + geom_density()
 ```
 
@@ -221,6 +222,7 @@ inTrain <- createDataPartition(y = pmlTrain2$classe, p = 0.7, list = FALSE)
 training <- pmlTrain2[inTrain, ]
 validating <- pmlTrain2[-inTrain, ]
 ```
+\pagebreak
 
 # Model selection {#model}
 As discussed earlier three different tree-based models will be trained and 
@@ -353,6 +355,8 @@ Because of the high accuracy of the random forest model, a blended model
 (e.g. a simple weighted majority vote ensemble classifier) is unlikely to
 improve the results significantly. Therefore it will not be 
 investigated further in this analysis.
+
+\pagebreak
 
 ## Final model and prediction
 The table below shows an overview of the training and validation set 
