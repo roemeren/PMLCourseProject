@@ -3,12 +3,12 @@ title: 'Practical Machine Learning: Prediction Assignment'
 author: "Robert Emerencia"
 date: "October 7, 2016"
 output:
-  pdf_document:
-    toc: yes
   html_document:
     highlight: tango
     number_sections: yes
     theme: united
+    toc: yes
+  pdf_document:
     toc: yes
 linkcolor: cyan
 urlcolor: magenta
@@ -144,7 +144,7 @@ The cleaned datasets contain `r ncol(pmlTrain2) -1` (quantitative) features.
 
 # Exploratory data analysis {#eda}
 To explore the training data `pmlTrain2` 
-descriptive statistics (5-number summaries) and exploratory plots (boxplots and histograms) were generated for each of the `r ncol(pmlTrain2) -1` features. 
+descriptive statistics (5-number summaries) and exploratory plots (boxplots, density plots and histograms) were generated for each of the `r ncol(pmlTrain2) -1` features. 
 
 Relationships between the (quantitative) features and the (categorical) outcome `classe` were investigated by scatter plots (feature vs. feature) and 
 side-by-side boxplots (feature vs. `classe`). 
