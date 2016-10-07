@@ -35,7 +35,8 @@ accuracy on the validation set. This model is applied to 20 different test cases
 with an obtained accuracy of 100%.
 
 # Introduction
-In this analysis the [Weight Lifting Exercises (WLE)](http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises) 
+In this analysis the 
+[Weight Lifting Exercises (WLE)](http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises) 
 dataset is analyzed and used to train and evaluate different 
 machine learning models. The dataset consists of measurements 
 from accelerometers on the belt, forearm, arm, and dumbell. 
@@ -85,7 +86,8 @@ The test set contains `r nrow(pmlTrain)` observations,
 `r ncol(pmlTrain)-1` features and an identification feature `problem_id`.
 
 The datasets are briefly opened in a spreadspreet program to check for obvious 
-errors. There appears to be a large amount of missing values (`NA`) as well as blanks and erroneous values (`#DIV/0!`). Blanks and erroneous 
+errors. There appears to be a large amount of missing values (`NA`) as well 
+as blanks and erroneous values (`#DIV/0!`). Blanks and erroneous 
 values are converted to `NA` after temporarily merging 
 the training and test sets.
 ```{r replacevalues}
@@ -107,7 +109,9 @@ featMissing <- sapply(pmlData, function(x) sum(is.na(x)))
 table(featMissing[featMissing != 0])
 ```
 For `r sum(featMissing != 0)`/`r length(featMissing) -1` (excluding 
-`train`) features there are missing values, varying between `r min(featMissing[featMissing != 0])` and `r max(featMissing[featMissing != 0])` observations or 98 to 100 percent.
+`train`) features there are missing values, varying between 
+`r min(featMissing[featMissing != 0])` and 
+`r max(featMissing[featMissing != 0])` observations or 98 to 100 percent.
 
 Imputing all these missing values wouldn't lead to good results
 which is why all features with missing values are removed from the dataset.
@@ -144,16 +148,22 @@ The cleaned datasets contain `r ncol(pmlTrain2) -1` (quantitative) features.
 
 # Exploratory data analysis {#eda}
 To explore the training data `pmlTrain2` 
-descriptive statistics (5-number summaries) and exploratory plots (boxplots, density plots and histograms) were generated for each of the `r ncol(pmlTrain2) -1` features. 
+descriptive statistics (5-number summaries) and exploratory plots (boxplots, 
+density plots and histograms) were generated for each of 
+the `r ncol(pmlTrain2) -1` features. 
 
-Relationships between the (quantitative) features and the (categorical) outcome `classe` were investigated by scatter plots (feature vs. feature) and 
-side-by-side boxplots (feature vs. `classe`). 
+Relationships between the (quantitative) features and the (categorical) 
+outcome `classe` were investigated by scatter plots (feature vs. feature) 
+and side-by-side boxplots (feature vs. `classe`). 
 
 This section describes the three main findings of the EDA.
 
 ## Normality of the features
-Many of the **features don't follow a normal distribution** or can easily be normalized. The distributions in general are complex and multi-modal which 
-could be related to specific circumstances related to the experiments and/or the participants. There however is not enough information to explore this further.
+Many of the **features don't follow a normal distribution** or can easily
+be normalized. The distributions in general are complex and multi-modal 
+which could be related to specific circumstances related to 
+the experiments and/or the participants. There however is not enough 
+information to explore this further.
 
 The figure below shows an example for the `accel_belt_y` feature.
 
@@ -163,7 +173,9 @@ ggplot(pmlTrain2, aes(x = accel_belt_y, color = classe)) + geom_density()
 ```
 
 ## Outliers
-The training set contains a clear **outlier on the 5373th row** that should be removed. The figure below shows the outlier values for the features `gyros_dumbbell_x` and `gyros_forearm_y`.
+The training set contains a clear **outlier on the 5373th row** that 
+should be removed. The figure below shows the outlier values for the 
+features `gyros_dumbbell_x` and `gyros_forearm_y`.
 
 ```{r outlier}
 par(mfrow=c(1,2), oma = c(0, 0, 2, 0), mar = c(3, 3, 2.5, 1))
@@ -188,7 +200,8 @@ xComp
 ```
 
 ## Variability of the features
-There are **no features with low variability** that should be removed from the training (and test) set.
+There are **no features with low variability** that should be removed 
+from the training (and test) set.
 ```{r nearzerovar}
 # show features with near-zero variability
 suppressPackageStartupMessages(library(caret))
@@ -200,13 +213,16 @@ subset(dfNZV, nzv == TRUE)
 The main conclusion of the EDA was that many of the features 
 don't follow a normal distribution. Therefore only machine learning
 **algorithms which do not assume normality** will be considered, more 
-specifically the tree-based algorithms: classification trees, random forests and gradient boosting. 
+specifically the tree-based algorithms: classification trees, random 
+forests and gradient boosting. 
 
 Because these methods don't require centering, scaling and/or 
-normalization of the features the preprocessing is limited to the **outlier removal** and **data slicing** of the training set.
+normalization of the features the preprocessing is limited to the 
+**outlier removal** and **data slicing** of the training set.
 
 ## Outlier removal
-The outlier on the 5373th row, identified during the EDA, is removed from the 
+The outlier on the 5373th row, identified during the EDA, is 
+removed from the 
 training set.
 ```{r outlierremoval}
 pmlTrain2 <- pmlTrain2[-5373, ]
@@ -227,7 +243,8 @@ validating <- pmlTrain2[-inTrain, ]
 # Model selection {#model}
 As discussed earlier three different tree-based models will be trained and 
 evaluated: **classification trees** (CART), **random forests** (RF) and 
-**gradient boosting** (GBM). At the end of the section a note is included about combining the models.
+**gradient boosting** (GBM). At the end of the section a note is 
+included about combining the models.
 
 For evaluating the performance of a model two functions will be used:
 ```{r perffunctions}
@@ -302,7 +319,8 @@ trainRF <- train(classe ~ ., data = training, method = "rf",
                  trControl = fitControl, tuneGrid = rfGrid)
 trainRF$bestTune
 ```
-The best random forest model has a `mtry` value of 9. This is also shown in the accuracy plot below.
+The best random forest model has a `mtry` value of 9. This is also 
+shown in the accuracy plot below.
 ```{r plotrf}
 plot(trainRF)
 ```
@@ -323,7 +341,9 @@ getModelInfo()$gbm$parameters
 ```
 The default parameters are `interaction.depth` = 1, `n.trees` = 100, 
 `shrinkage` = 0.1 and `n.minobsinnode` = 10. In this analysis `shrinkage` and 
-`n.minobsinnode` are kept fixed while a (limited) set of  values of `interaction.depth` and `n.trees` are used for tuning, again using a 5-fold cross-validation.
+`n.minobsinnode` are kept fixed while a (limited) set of  values of 
+`interaction.depth` and `n.trees` are used for tuning, again using a 
+5-fold cross-validation.
 ```{r tunegbm, cache = TRUE, warning = FALSE, message = FALSE}
 set.seed(264)
 fitControl <- trainControl(method = "cv", number = 5)
@@ -385,7 +405,8 @@ accValGBM <- format(accValGBM, digits = 2, nsmall = 2)
 
 The random forest model has the best accuracy and estimated out-of-sample error
 and is chosen as final model to predict the 20 different test set cases. The 
-obtained accuracy is 100% after submitting the results to the Course Project Prediction Quiz.
+obtained accuracy is 100% after submitting the results to the Course 
+Project Prediction Quiz.
 ```{r applytest}
 predict(trainRF, newdata = pmlTest2)
 ```
