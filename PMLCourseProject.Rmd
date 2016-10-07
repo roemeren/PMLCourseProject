@@ -1,0 +1,382 @@
+---
+title: "PPM-Course-Project"
+author: "Robert Emerencia"
+date: "October 7, 2016"
+output: 
+    html_document:
+        toc: true
+        theme: united
+        number_sections: yes
+        highlight: tango
+linkcolor: cyan
+urlcolor: magenta
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(echo = TRUE)
+```
+
+# Executive summary {.unnumbered}
+A dataset consisting of various accelerometer measurements is used to 
+predict 5 different ways to perform a weight lifting exercise. 
+The received dataset is cleaned by removing all missing and erroneous
+values. Additional preprocessing is done by removing outliers and 
+irrelevant features. 
+
+Three different classifiers are trained by splitting the dataset 
+into a training set (for training a model) and a validation set 
+(for testing on new observations). The random forest classifier yields 
+the best result with a 99.5% accuracy on the validation set. 
+This model is then applied to a small testing set of 20 new observations, with 
+an accuracy of 100%.
+
+# Introduction
+In this analysis the [Weight Lifting Exercises (WLE)](http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises) 
+dataset is analyzed and used to train and evaluate different 
+machine learning models. The dataset consists of measurements 
+from accelerometers on the belt, forearm, arm, and dumbell. 
+Six participants were asked to perform barbell lifts correctly and incorrectly 
+in 5 different ways (classes A-E).
+
+In [Section 1](#clean) the dataset is downloaded and cleaned. In 
+[Section 2](#eda) an exploratory 
+data analysis (EDA) is performed to get acquainted with the data and the 
+options for modelling. 
+
+Based on the EDA a set of preprocessing operations is performed in
+[Section 3](#preproc). Different classifiers are trained and 
+evaluated in [Section 4](#model), after which a final model is chosen 
+and applied to a small test set of 20 observations.
+
+# Data cleaning <a id="clean"></a>
+## Download and missing values
+The training and test datasets are downloaded and loaded into R.
+```{r downloaddata}
+# function to download data
+getData <- function(downloadURL, dsName) {
+    if (!(file.exists(dsName))) {
+        download.file(downloadURL, dsName)
+        downloadDate <- date()
+        print(paste("File", dsName, "downloaded. Date:", downloadDate))
+    } else {
+        print(paste("File", dsName, "found in working directory."))
+    }
+}
+# get training and test sets
+dsTrain <- "./data/pml-training.csv"
+dsTest <- "./data/pml-testing.csv"
+urlData <- "https://d396qusza40orc.cloudfront.net/predmachlearn/"
+urlTrain <- paste(urlData, "pml-training.csv", sep = "")
+urlTest <- paste(urlData, "pml-testing.csv", sep = "")
+getData(urlTrain, dsTrain)
+getData(urlTest, dsTest)
+# load into R
+pmlTrain <- read.csv(dsTrain)
+pmlTest <- read.csv(dsTest)
+dim(pmlTrain)
+dim(pmlTest)
+```
+The training set contains `r nrow(pmlTrain)` observations,
+`r ncol(pmlTrain)-1` features and a single outcome `classe`. 
+The test set contains `r nrow(pmlTrain)` observations,
+`r ncol(pmlTrain)-1` features and an identification feature `problem_id`.
+
+The datasets are briefly opened in a spreadspreet program to check for obvious 
+errors. There appear to be many missing values (`NA`) as well as blanks and some erroneous values (`#DIV/0!`). Blanks and erroneous values are converted 
+to `NA` after temporarily merging the training and test sets.
+```{r replacevalues}
+# temporarily merge the datasets (excluding the outcome)
+pmlTrain$train <- 1
+pmlTest$train <- 0
+keepTrain <- !(colnames(pmlTrain) %in% "classe")
+keepTest <- !(colnames(pmlTest) %in% "problem_id")
+pmlData <- rbind(pmlTrain[, keepTrain], pmlTest[, keepTest])
+# remove the row number variable X
+pmlData$X <- NULL
+# replace some erroneous values by NA
+pmlData[pmlData == ""] <- NA
+pmlData[pmlData == "#DIV/0!"] <- NA
+```
+In the resulting dataset the total amount of missing values is calculated 
+for each feature.
+```{r missingvalues}
+# features with missing values
+featMissing <- sapply(pmlData, function(x) sum(is.na(x)))
+table(featMissing[featMissing != 0])
+```
+For `r sum(featMissing != 0)`/`r length(featMissing) -1 ` (excluding 
+`train`) features there are missing values, varying between `r min(featMissing != 0)` and `r min(featMissing != 0)` observations or 98 to 100 percent.
+
+Imputing all these missing values won't lead to good results
+which is why all variables with missing values are removed from the dataset.
+```{r removemissing}
+# remove all features with missing values
+pmlData <- pmlData[, featMissing == 0]
+```
+## Irrelevant features
+Some of the features are irrelevant for this analysis such as the time-related
+features `raw_timestamp_part_1`, `raw_timestamp_part_2`, `cvtd_timestamp`, 
+`new_window` and `num_window`. The other irrelevant features are 
+the row number `X` and user name `user_name`. These features 
+are removed from the dataset.
+```{r removeirrelevant}
+# remove irrelevant features
+pmlData$raw_timestamp_part_1 <- NULL
+pmlData$raw_timestamp_part_2 <- NULL
+pmlData$cvtd_timestamp <- NULL
+pmlData$X <- NULL
+pmlData$user_name <- NULL
+pmlData$new_window <- NULL
+pmlData$num_window <- NULL
+```
+## Cleaned datasets
+The merged dataset is split again in a cleaned training and test set.
+```{r splitdatasets}
+pmlTrain2 <- subset(pmlData, train == 1)
+pmlTrain2$classe <- pmlTrain$classe
+pmlTrain2$train <- NULL
+pmlTest2 <- subset(pmlData, train == 0)
+pmlTest2$train <- NULL
+pmlTest2$problem_id <- pmlTest$problem_id
+```
+The cleaned datasets contain `r ncol(pmlTrain2) -1` (quantitative) features.
+
+# Exploratory data analysis <a id="eda"></a>
+To explore the training data descriptive statistics (5-number summaries) and exploratory plots (boxplots and histograms) were generated for 
+each of the `r ncol(pmlTrain2) -1` features. 
+
+Relationships between the (quantitative) features and the (categorical) outcome `classe` were investigated by scatter plots (feature vs. feature) and 
+side-by-side boxplots (features vs. `classe`). 
+
+This section describes the 3 main findings of the EDA.
+
+## Normality of the features
+Many of the **features don't follow a normal distribution** or can be easily normalized. The distributions in general are complex and multi-modal and 
+could be related to specific circumstances related to the experiments and/or the participants. There however is not enough information to explore this further.
+
+The figure below shows an example for the `accel_belt_y` feature.
+
+```{r nonnormal}
+suppressWarnings(library(ggplot2))
+ggplot(pmlTrain2, aes(x = accel_belt_y, color = classe)) + geom_density()
+```
+
+## Outliers
+The training set contains a clear **outlier on the 5373th row** that should be removed. The figure below shows the outlier values for the features `gyros_dumbbell_x` and `gyros_forearm_y`..
+
+```{r outlier}
+par(mfrow=c(1,2), oma = c(0, 0, 2, 0), mar = c(3, 3, 2.5, 1))
+boxplot(pmlTrain2$gyros_dumbbell_x, main = "gyros_dumbbell_x")
+boxplot(pmlTrain2$gyros_forearm_y, main = "gyros_forearm_y")
+mtext("Outlier examples", outer = TRUE, cex = 1.5)
+```
+
+The outlier has extreme values for 8 different variables.
+```{r outlierdetail}
+pmlTrain2[5373, c("total_accel_dumbbell", "gyros_dumbbell_x",
+                  "gyros_dumbbell_y", "gyros_dumbbell_z",
+                  "total_accel_forearm", "gyros_forearm_x",
+                  "gyros_forearm_y", "gyros_forearm_z")]
+```
+
+## Variability of the features
+There are **no features with low variability** that should be removed from the training (and test) set.
+```{r nearzerovar}
+library(caret)
+dfNZV <- nearZeroVar(pmlTrain2, saveMetrics = TRUE)
+# show features with near-zero variability
+subset(dfNZV, nzv == TRUE)
+```
+
+# Preprocessing <a id="preproc"></a>
+The main conclusion of the EDA was that many of the features 
+don't follow a normal distribution, which is why only machine learning
+**algorithms which do not assume normality** will be considered. More 
+specifically the tree-based algorithms (classification trees, random forests and gradient boosting) that don't require centering, scaling and/or 
+normalization will be evaluated. 
+
+The preprocessing therefore is limited to the **outlier removal** and **data slicing** of the training set.
+
+## Outlier removal
+The outlier on the 5373th row, identified during the EDA, 
+is removed from the dataset.
+```{r outlierremoval}
+# remove outlier on 5373th row
+pmlTrain2 <- pmlTrain2[-5373, ]
+```
+
+## Data slicing
+The training set is split into a training set `training` (70% for training the classifier) and a validation set `validating` (30% for testing the model on new data).
+```{r dataslicing}
+# data slicing
+set.seed(483)
+inTrain <- createDataPartition(y = pmlTrain2$classe, p = 0.7, list = FALSE)
+training <- pmlTrain2[inTrain, ]
+validating <- pmlTrain2[-inTrain, ]
+```
+
+# Model selection <a id="model"></a>
+As discussed earlier three different tree-based models will be trained and 
+evaluated: classification trees, random forests and gradient boosting. This 
+section also includes a note about combining the models.
+
+For evaluating the models two functions will be used:
+```{r perffunctions}
+# training set performance (accuracy)
+trainingPerformance <- function(model) {
+    pred <- predict(model)
+    acc <- confusionMatrix(pred, training$classe)$overall[1]
+    100*acc
+}
+# test set performance (accuracy)
+validatingPerformance <- function(model, x) {
+    pred <- predict(model, newdata = x)
+    acc <- confusionMatrix(pred, validating$classe)$overall[1]
+    100*acc
+}
+```
+
+## Classification tree
+Classification trees have 1 parameter `cp` (the complexity of the 
+tree):
+```{r paramcart}
+getModelInfo()$rpart$parameters
+```
+The default `cp` value is 0.01 (see `rpart` documentation) but can be tuned 
+(for example) by a 10-fold cross-validation on the training set `training`. A smaller `cp` value in general leads to more accurate but much less interpretable (more complex) models.
+```{r tunecart, cache = TRUE}
+set.seed(264)
+fitControl <- trainControl(method = "cv", number = 10)
+cartGrid <- expand.grid(.cp = seq(0.002, 0.1, 0.002))
+trainCART <- train(classe ~ ., data = training,
+                   method = "rpart",
+                   trControl = fitControl, tuneGrid = cartGrid)
+bestCP <- trainCART$bestTune
+trainRes <- trainCART$results
+trainRes[trainRes$cp %in% c(0.01, bestCP), c("cp", "Accuracy")]
+```
+The best classification tree has a `cp` value of 0.002 which is much smaller 
+than the default value. There is a significant increase in accuracy compared 
+to the result with the default `cp` value. The tree plot below shows that 
+the resulting tree is very hard to interpret (as expected).
+```{r evalcart}
+library(rpart.plot)
+prp(trainCART$finalModel)
+accTrainCART <- trainingPerformance(trainCART)
+accValCART <- validatingPerformance(trainCART, validating)
+c(accTrainCART, accValCART)
+```
+The final classification tree has a training set accuracy of 87.6% and a 
+validation set accuracy of 85.4%. This could be improved by lowering the `cp`
+value but will lead to even more uninterpretable models. Other techniques will 
+probably be more useful.
+
+## Random forest
+For random forests the parameter `mtry` (the number of variables randomly 
+sampled as candidates at each split) can be tuned, similar to the `cp` parameter
+for classification trees.
+```{r paramrf}
+getModelInfo()$rf$parameters
+```
+The default `mtry` value is equal to `floor(sqrt(ncol(training)))` = 7 (see 
+`randomForest` documentation).  A range of values between 1 and 15 is tried out. 
+To decrease the total computation time the number of folds in the 
+cross-validation is decreased from 10 to 5.
+
+```{r tunerf, cache = TRUE}
+set.seed(264)
+fitControl <- trainControl(method = "cv", number = 5)
+rfGrid = expand.grid(.mtry = seq(1, 15, 2))
+trainRF <- train(classe ~ ., data = training, method = "rf",
+                 trControl = fitControl, tuneGrid = rfGrid)
+trainRF$bestTune
+```
+The best random forest model has a `mtry` value of 9. This is also shown in the accuracy plot below.
+```{r plotrf}
+plot(trainRF)
+```
+
+The tuned random forest model has a training set accuracy of 100% 
+and a validation set accuracy of 99.5%. This is quite a big improvement 
+over the classification tree model. 
+```{r evalrf}
+accTrainRF <- trainingPerformance(trainRF)
+accValRF <- validatingPerformance(trainRF, validating)
+c(accTrainRF, accValRF)
+```
+
+## Gradient boosting
+The gradient boosting algorithm has 4 tuning parameters.
+```{r paramgbm}
+getModelInfo()$gbm$parameters
+```
+The default parameters are `interaction.depth` = 1, `n.trees` = 100, 
+`shrinkage` = 0.1 and `n.minobsinnode` = 10. In this analysis `shrinkage` and 
+`n.minobsinnode` are kept fixed while a (limited) set of  values of `interaction.depth` and `n.trees` are used for tuning, again using 
+5-fold cross-validation.
+```{r tunegbm, cache = TRUE}
+set.seed(264)
+fitControl <- trainControl(method = "cv", number = 5)
+gbmGrid <-  expand.grid(.interaction.depth = c(1:3),
+                        .n.trees = (1:7)*50,
+                        .shrinkage = 0.1,
+                        .n.minobsinnode = 10)
+trainGBM <- train(classe ~ ., method = "gbm", data = training,
+                  trControl = fitControl, tuneGrid = gbmGrid, verbose = FALSE)
+trainGBM$bestTune
+```
+The best gradient boosting model has an interaction depth of 3 and 350 trees. 
+The plot below shows the training accuracy for the different combinations 
+of parameters. Larger values for both parameters will 
+improve the model slightly but greatly increase the total computation time.
+```{r plotgbm}
+plot(trainGBM)
+```
+The final model has a training set accuracy of 99.7% and a validation 
+set accuracy of 98.8%, which is a bit worse than the random forest model.
+```{r evalgbm}
+accTrainGBM <- trainingPerformance(trainGBM)
+accValGBM <- validatingPerformance(trainGBM, validating)
+c(accTrainGBM, accValGBM)
+```
+## Combined model?
+Because of the high accuracy of the random forest model, a blended model 
+(e.g. a simple weighted majority vote ensemble classifier) is unlikely to 
+greatly improve the results. Therefore it will not be investigated further in 
+this analysis.
+
+## Final model & prediction
+The table below an overview of the training and validation set accuracies for the 
+three different trained classifiers.
+
+```{r formataccuracies, include = FALSE}
+# out-of-sample errors
+oseCART <- format(100 - accValCART, digits = 2, nsmall = 2)
+oseRF <- format(100 - accValRF, digits = 2, nsmall = 2)
+oseGBM <- format(100 - accValGBM, digits = 2, nsmall = 2)
+# training set accuracies
+accTrainCART <- format(accTrainCART, digits = 2, nsmall = 2)
+accTrainRF <- format(accTrainRF, digits = 2, nsmall = 2)
+accTrainGBM <- format(accTrainGBM, digits = 2, nsmall = 2)
+# test set accuracies
+accValCART <- format(accValCART, digits = 2, nsmall = 2)
+accValRF <- format(accValRF, digits = 2, nsmall = 2)
+accValGBM <- format(accValGBM, digits = 2, nsmall = 2)
+```
+
+| method  | training accuracy (%) | validation accuracy (%) | estimated out-of-sample error (%)
+|---|---|---|---|
+|  `rpart` | `r accTrainCART`  |  `r accValCART`   | `r oseCART`    |
+|`rf`   | `r accTrainRF`  |  `r accValRF`   |   `r oseRF`     |
+|`gbm`   | `r accTrainGBM`  | `r accValGBM`   |  `r oseGBM`  |
+
+The random forest model has the best accuracy and estimated out-of-sample error
+and is chosen as final model to predict the 20 different test set cases.
+```{r applytest}
+# predict with best (rf) model
+predTestRF <- predict(trainRF, newdata = pmlTest2, type = "prob")
+predTestRF$classe <- factor(apply(predTestRF, 1, which.max),
+                            labels = LETTERS[1:5])
+predTestRF
+```
