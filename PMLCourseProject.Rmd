@@ -1,14 +1,14 @@
 ---
 title: 'Practical Machine Learning: Prediction Assignment'
 author: "Robert Emerencia"
-date: "October 8, 2016"
+date: "October 9, 2016"
 output:
-  pdf_document:
-    toc: yes
   html_document:
     highlight: tango
     number_sections: yes
     theme: united
+    toc: yes
+  pdf_document:
     toc: yes
 linkcolor: cyan
 urlcolor: magenta
@@ -203,9 +203,9 @@ xComp
 ## Variability of the features
 There are **no features with low variability** that should be removed 
 from the training (and test) set.
-```{r nearzerovar}
+```{r nearzerovar, warning = FALSE, message = FALSE}
 # show features with near-zero variability
-suppressPackageStartupMessages(library(caret))
+library(caret)
 dfNZV <- nearZeroVar(pmlTrain2, saveMetrics = TRUE)
 subset(dfNZV, nzv == TRUE)
 ```
