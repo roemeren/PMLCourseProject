@@ -181,7 +181,7 @@ $(document).ready(function () {
 <div id="executive-summary" class="section level1 unnumbered">
 <h1>Executive summary</h1>
 <p>A dataset consisting of various accelerometer measurements is used to predict 5 different ways to perform a weight lifting exercise. The received dataset is cleaned by removing all missing and erroneous values. Additional preprocessing is done by removing outliers and irrelevant features.</p>
-<p>Three different classifiers are trained after splitting the dataset into a training set (for training a model) and a validation set (for testing the classifier on new observations). The random forest classifier yields the best results with a 99.5% accuracy on the validation set. This model is applied to 20 different test cases with an obtained accuracy of 100%.</p>
+<p>Three different classifiers are trained after splitting the dataset into a training set (for training a model) and a validation set (for testing the classifier on new observations). The random forest classifier yields the best results with a 99.5% accuracy on the validation set and an estimated out-of-sample error of 0.5%. This model is applied to 20 different test cases with an obtained accuracy of 100%.</p>
 </div>
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
@@ -211,9 +211,9 @@ urlData &lt;-<span class="st"> &quot;https://d396qusza40orc.cloudfront.net/predm
 urlTrain &lt;-<span class="st"> </span><span class="kw">paste</span>(urlData, <span class="st">&quot;pml-training.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
 urlTest &lt;-<span class="st"> </span><span class="kw">paste</span>(urlData, <span class="st">&quot;pml-testing.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
 <span class="kw">getData</span>(urlTrain, dsTrain)</code></pre></div>
-<pre><code>## [1] &quot;File ./data/pml-training.csv downloaded. Date: Sat Oct 08 02:34:19 2016&quot;</code></pre>
+<pre><code>## [1] &quot;File ./data/pml-training.csv downloaded. Date: Sat Oct 08 10:02:10 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getData</span>(urlTest, dsTest)</code></pre></div>
-<pre><code>## [1] &quot;File ./data/pml-testing.csv downloaded. Date: Sat Oct 08 02:34:20 2016&quot;</code></pre>
+<pre><code>## [1] &quot;File ./data/pml-testing.csv downloaded. Date: Sat Oct 08 10:02:11 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># load into R</span>
 pmlTrain &lt;-<span class="st"> </span><span class="kw">read.csv</span>(dsTrain)
 pmlTest &lt;-<span class="st"> </span><span class="kw">read.csv</span>(dsTest)

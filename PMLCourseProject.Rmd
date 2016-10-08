@@ -31,7 +31,8 @@ Three different classifiers are trained after splitting the dataset
 into a training set (for training a model) and a validation set 
 (for testing the classifier on new observations). 
 The random forest classifier yields the best results with a 99.5% 
-accuracy on the validation set. This model is applied to 20 different test cases
+accuracy on the validation set and an estimated out-of-sample error of 
+0.5%. This model is applied to 20 different test cases
 with an obtained accuracy of 100%.
 
 # Introduction
