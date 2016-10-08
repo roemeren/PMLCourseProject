@@ -145,7 +145,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Practical Machine Learning: Prediction Assignment</h1>
 <h4 class="author"><em>Robert Emerencia</em></h4>
-<h4 class="date"><em>October 7, 2016</em></h4>
+<h4 class="date"><em>October 8, 2016</em></h4>
 
 </div>
 
@@ -185,7 +185,7 @@ $(document).ready(function () {
 </div>
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>In this analysis the <a href="http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises">Weight Lifting Exercises (WLE)</a> dataset is analyzed and used to train and evaluate different machine learning models. The dataset consists of measurements from accelerometers on the belt, forearm, arm, and dumbell. Six participants were asked to perform barbell lifts correctly and incorrectly in 5 different ways (classes A-E).</p>
+<p>In this analysis the <a href="http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises">Weight Lifting Exercises (WLE)</a> dataset is analyzed and used to train and evaluate different machine learning models. The dataset consists of measurements from accelerometers on the belt, forearm, arm, and dumbbell. Six participants were asked to perform barbell lifts correctly and incorrectly in 5 different ways (classes A-E).</p>
 <p>In <a href="#clean">Section 2</a> the dataset is downloaded and cleaned. In <a href="#eda">Section 3</a> an exploratory data analysis (EDA) is performed to get acquainted with the data.</p>
 <p>Based on the EDA a set of preprocessing operations is performed in <a href="#preproc">Section 4</a>. Different classifiers are trained and evaluated in <a href="#model">Section 5</a>, after which a final model is chosen and applied to a small test set of 20 observations.</p>
 </div>
@@ -211,9 +211,9 @@ urlData &lt;-<span class="st"> &quot;https://d396qusza40orc.cloudfront.net/predm
 urlTrain &lt;-<span class="st"> </span><span class="kw">paste</span>(urlData, <span class="st">&quot;pml-training.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
 urlTest &lt;-<span class="st"> </span><span class="kw">paste</span>(urlData, <span class="st">&quot;pml-testing.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
 <span class="kw">getData</span>(urlTrain, dsTrain)</code></pre></div>
-<pre><code>## [1] &quot;File ./data/pml-training.csv downloaded. Date: Fri Oct 07 22:06:39 2016&quot;</code></pre>
+<pre><code>## [1] &quot;File ./data/pml-training.csv downloaded. Date: Sat Oct 08 02:34:19 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getData</span>(urlTest, dsTest)</code></pre></div>
-<pre><code>## [1] &quot;File ./data/pml-testing.csv downloaded. Date: Fri Oct 07 22:06:39 2016&quot;</code></pre>
+<pre><code>## [1] &quot;File ./data/pml-testing.csv downloaded. Date: Sat Oct 08 02:34:20 2016&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># load into R</span>
 pmlTrain &lt;-<span class="st"> </span><span class="kw">read.csv</span>(dsTrain)
 pmlTest &lt;-<span class="st"> </span><span class="kw">read.csv</span>(dsTest)
