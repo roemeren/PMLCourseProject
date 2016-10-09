@@ -3,12 +3,12 @@ title: 'Practical Machine Learning: Prediction Assignment'
 author: "Robert Emerencia"
 date: "October 9, 2016"
 output:
+  pdf_document:
+    toc: yes
   html_document:
     highlight: tango
     number_sections: yes
     theme: united
-    toc: yes
-  pdf_document:
     toc: yes
 linkcolor: cyan
 urlcolor: magenta
@@ -179,7 +179,7 @@ should be removed. The figure below shows the outlier values for the
 features `gyros_dumbbell_x` and `gyros_forearm_y`.
 
 ```{r outlier}
-par(mfrow=c(1,2), oma = c(0, 0, 2, 0), mar = c(3, 3, 2.5, 1))
+par(mfrow = c(1,2), oma = c(0, 0, 2, 0), mar = c(3, 3, 2.5, 1))
 boxplot(pmlTrain2$gyros_dumbbell_x, main = "gyros_dumbbell_x")
 boxplot(pmlTrain2$gyros_forearm_y, main = "gyros_forearm_y")
 mtext("Outlier examples", outer = TRUE, cex = 1.5)
@@ -273,7 +273,7 @@ getModelInfo()$rpart$parameters
 ```
 The default `cp` value is 0.01 (see `rpart` documentation) but can be tuned 
 using (for example) a 10-fold cross-validation on the training set `training`. 
-A smaller `cp` value in general leads to more accurate but much 
+A smaller `cp` value in general leads to more accurate but 
 less interpretable (more complex) models.
 ```{r tunecart, cache = TRUE, warning = FALSE, message = FALSE}
 set.seed(264)
@@ -317,7 +317,7 @@ cross-validation is decreased from 10 to 5.
 ```{r tunerf, cache = TRUE, warning = FALSE, message = FALSE}
 set.seed(264)
 fitControl <- trainControl(method = "cv", number = 5)
-rfGrid = expand.grid(.mtry = seq(1, 15, 2))
+rfGrid <- expand.grid(.mtry = seq(1, 15, 2))
 trainRF <- train(classe ~ ., data = training, method = "rf",
                  trControl = fitControl, tuneGrid = rfGrid)
 trainRF$bestTune
